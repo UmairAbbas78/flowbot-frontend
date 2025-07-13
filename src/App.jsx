@@ -1,13 +1,15 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import Home from "./pages/home/Home";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
+import Routes from "./routes/AppRoutes";
 
 function App() {
   return (
     <>
-      <Home />
+      <Provider store={store}>
+        <Routes/>
+      </Provider>
     </>
   );
 }

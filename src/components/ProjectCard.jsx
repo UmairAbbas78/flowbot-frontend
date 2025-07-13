@@ -1,12 +1,12 @@
 // ProjectCard.jsx
 import { useNavigate } from "react-router-dom";
 
-export default function ProjectCard({ projName, des }) {
+export default function ProjectCard({ projName, des, id }) {
   const navigate = useNavigate();
   return (
     <div
       className="w-64 rounded-xl  overflow-hidden shadow-sm hover:cursor-pointer"
-      onClick={() => navigate("/project")}
+      onClick={() => navigate(`/project/${id}`)}
     >
       <div className="bg-white flex justify-center items-center py-6">
         <span className="text-5xl">😊 🥐</span>

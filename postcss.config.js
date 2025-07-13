@@ -5,7 +5,5 @@ export default {
       config: "./tailwind.config.js",
       // Other options if needed
     },
-    autoprefixer: {},
-    // Other plugins
   },
 };
