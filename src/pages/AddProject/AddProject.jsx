@@ -1,14 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sendRecord } from "../../store/features/demoSlice"; // Adjust the path if needed
+import { useNavigate } from "react-router-dom";
+import { sendRecord } from "../../store/features/demoSlice";
 
 export default function AddProject() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { status, result, error } = useSelector((state) => state.record);
 
   const [url, setUrl] = useState("");
   const [appName, setAppName] = useState("");
   const [prompt, setPrompt] = useState("");
+
+  useEffect(() => {
+    if (status === "succeeded" && result?.id) {
+      navigate(`/project/${result.id}`);
+    }
+  }, [status, result, navigate]);
 
   const handleSubmit = () => {
     if (!url || !appName || !prompt) {
@@ -20,69 +28,56 @@ export default function AddProject() {
   };
 
   return (
-    <div className="min-h-screen bg-white px-6 py-8 font-poppins text-sm">
-      <div className="max-w-6xl mx-auto">
-        {/* Heading */}
-        <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 px-6 py-10 font-poppins text-sm">
+      <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-md">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-2xl font-semibold">Create New Demo</h1>
-            <p className="text-gray-500">
-              Add the details below to create a new demo video.
-            </p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-1">Create New Demo</h1>
+            <p className="text-gray-500">Fill in the details below to generate your app demo video.</p>
           </div>
           <button
             onClick={handleSubmit}
             disabled={status === "loading"}
-            className="px-6 py-2 bg-[#E5E5E5] hover:bg-gray-300 rounded disabled:opacity-50"
+            className="px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-md shadow-md hover:shadow-lg transition disabled:opacity-60"
           >
-            {status === "loading" ? "Processing..." : "Go"}
+            {status === "loading" ? "Processing..." : "Go 🚀"}
           </button>
         </div>
 
-        {/* Input Fields */}
-        <div className="space-y-4">
+        {/* Form Fields */}
+        <div className="space-y-6">
           <InputField
             label="URL"
-            placeholder="Enter the URL to the app"
+            placeholder="https://your-app-url.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
           <InputField
             label="App Name"
-            placeholder="Enter the name of your project"
+            placeholder="My AI App"
             value={appName}
             onChange={(e) => setAppName(e.target.value)}
           />
           <InputField
             label="Prompt"
-            placeholder="Enter steps the AI must take in the demo"
+            placeholder="e.g. Login, click generate, wait, copy result..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             isTextArea
           />
         </div>
 
-        {/* Demo Video Section */}
+        {/* Demo Video Status */}
         <div className="mt-10">
-          <h2 className="font-semibold mb-2">Demo Video</h2>
-          <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded text-center px-4">
-            {status === "loading" && (
-              <p className="text-lg font-medium">Processing...</p>
-            )}
-            {status === "succeeded" && result?.videoUrl ? (
-              <video
-                controls
-                className="w-full h-full object-cover rounded"
-                src={result.videoUrl}
-              />
-            ) : status === "succeeded" ? (
-              <p className="text-green-600 font-medium">
-                Success! (No video URL returned)
-              </p>
+          <h2 className="font-semibold text-lg text-gray-800 mb-2">Demo Video</h2>
+          <div className="w-full h-64 rounded-md bg-gray-100 border border-gray-300 flex items-center justify-center text-center px-6">
+            {status === "loading" ? (
+              <p className="text-indigo-500 font-medium animate-pulse">Processing your demo...</p>
             ) : status === "failed" ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <p className="text-gray-400">Your demo will appear here.</p>
+              <p className="text-gray-400">Once ready, your demo will appear here.</p>
             )}
           </div>
         </div>
@@ -95,22 +90,22 @@ export default function AddProject() {
 function InputField({ label, placeholder, value, onChange, isTextArea }) {
   return (
     <div>
-      <label className="block font-semibold mb-1">{label}</label>
+      <label className="block text-gray-700 font-semibold mb-2">{label}</label>
       {isTextArea ? (
         <textarea
-          rows="3"
+          rows="4"
           placeholder={placeholder}
-          className="w-full px-4 py-2 border border-gray-300 bg-gray-100 rounded resize-none focus:outline-none"
           value={value}
           onChange={onChange}
+          className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
         />
       ) : (
         <input
           type="text"
           placeholder={placeholder}
-          className="w-full px-4 py-2 border border-gray-300 bg-gray-100 rounded focus:outline-none"
           value={value}
           onChange={onChange}
+          className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
         />
       )}
     </div>
